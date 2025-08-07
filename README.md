@@ -94,13 +94,8 @@ EcoOptiAgent/
 
 
 
-🧠 Architecture
-Frontend (HTML, CSS, JS) <--> Flask Backend API <--> Agent Modules
+🧠 Architecture:
 
-1. frontend/
-   ├── index.html        → UI layout for dashboard
-   ├── style.css         → Styling for charts and components
-   └── script.js         → Handles user interaction and API calls
 
 2. backend/
    ├── app.py            → Flask server: connects frontend with agents
@@ -139,6 +134,7 @@ To contribute:
 
 
 📞 Support:
+
 For any questions or support, please contact:
 📧 sunyaslokapriyadarshi@gmail.com
 
