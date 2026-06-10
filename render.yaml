@@ -4,7 +4,7 @@ services:
     env: python
     plan: free
     buildCommand: "pip install -r backened/requirement.txt"
-    startCommand: "cd backened && gunicorn main:app"
+    startCommand: "cd backened && gunicorn main:app --bind 0.0.0.0:$PORT"
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.0
