@@ -85,7 +85,8 @@
 
 # if __name__== '__main__':
 #     app.run(debug=True)
-from flask import Flask, request, jsonify
+import os
+from flask import Flask, request, jsonify, send_from_directory
 from langgraph.graph import StateGraph, END
 import operator
 from typing import TypedDict, Annotated
@@ -99,8 +100,13 @@ from agents.greeninfra_agent import run_greeninfra_agent
 from agents.optimizer_agent import run_optimizer_agent
 from agents.decision_agent import run_decision_agent
 
-app = Flask(__name__)
+# Serve static files from the frontend directory
+app = Flask(__name__, static_folder='../frontend', static_url_path='/')
 CORS(app)
+
+@app.route('/')
+def index():
+    return send_from_directory(app.static_folder, 'index.html')
 
 # Define the state of our graph (This is for a more advanced LangGraph setup)
 class AgentState(TypedDict):
@@ -125,6 +131,19 @@ class AgentState(TypedDict):
 @app.route('/analyze', methods=['POST'])
 def analyze():
     data = request.json
+
+    if not os.getenv("GOOGLE_API_KEY"):
+        # Mock response when API key is missing
+        return jsonify({
+            "electricity_suggestions": ["Switch to LED bulbs", "Use smart power strips", "Optimize AC usage"],
+            "transport_suggestions": ["Use public transit", "Carpool", "Switch to electric vehicles"],
+            "fuel_suggestions": ["Perform regular maintenance", "Use alternative fuels", "Optimize routing"],
+            "greeninfra_suggestion": "Consider installing solar panels or green roofs.",
+            "emissions_breakdown": {"electricity": 120.5, "transport": 350.2, "fuel": 50.0},
+            "total_emissions_kg_per_month": 520.7,
+            "optimizer_output": "The most significant source of emissions is transport. Prioritize EV transition.",
+            "final_decision": "Implement the suggested transport and electricity optimizations. **Action:** Start with LED replacements. **Impact:** Immediate reduction in power consumption."
+        })
     
     # Step 1: Run specialized agents sequentially and collect their outputs
     electricity_suggestions, electricity_emission = run_electricity_agent(data)

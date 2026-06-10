@@ -1,7 +1,9 @@
 # ECO-OPTI-AGENT
 # 🌱 EcoOptiAgent – AI-Driven Carbon Optimization
 
-EcoOptiAgent is a full-stack multi-agent AI system designed to optimize carbon emissions for businesses. It uses intelligent agents, ReactJS frontend, and Python backend to analyze emission patterns and provide actionable recommendations for sustainability.
+**[Live Demo](your-render-url-here)**
+
+EcoOptiAgent is a full-stack multi-agent AI system designed to optimize carbon emissions for businesses. It uses intelligent agents, HTML/JS frontend, and a Python Flask backend to analyze emission patterns and provide actionable recommendations for sustainability.
 
 ---
 
@@ -43,25 +45,27 @@ EcoOptiAgent is a full-stack multi-agent AI system designed to optimize carbon e
    ```bash
    git clone https://github.com/Satyaprakash7325/Eco_Opti_Agent.git
    cd Eco_Opti_Agent
-   
-Backend Setup: 
+   ```
 
-2.Navigate to backend folder and install dependencies:
+2. Install backend dependencies:
+   ```bash
+   cd backened
+   pip install -r requirement.txt
+   ```
 
-cd backend
-pip install -r requirements.txt
+3. Start the Flask server (which also serves the frontend):
+   ```bash
+   python main.py
+   ```
+4. Open your browser and navigate to `http://localhost:5000`
 
-3.Start the Flask server:
-python app.py
-
-Frontend Setup:
-
-4.In a new terminal, navigate to the frontend folder and install dependencies:
-
-cd frontend
-npm install
-5.Start the React development server:
-npm start
+### Render Deployment
+This repository is configured with a `render.yaml` Blueprint. To deploy:
+1. Push this repository to GitHub.
+2. In the Render Dashboard, create a new "Blueprint".
+3. Select this repository.
+4. Render will automatically build and deploy both the backend and frontend.
+5. Provide your `GOOGLE_API_KEY` as an environment variable in the Render Dashboard (optional: if not provided, the app will gracefully degrade to use mock data for demonstration purposes).
 
 
 🧠 Project Structure:
