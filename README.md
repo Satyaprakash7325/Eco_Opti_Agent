@@ -11,7 +11,7 @@ pinned: false
   <h1>🌱 Eco-Opti-Agent</h1>
   <p><strong>AI-Driven Carbon Optimization for Businesses</strong></p>
   
-  [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen.svg)](https://eco-opti-agent-g241.onrender.com)
+  [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen.svg)](https://huggingface.co/spaces/Satya73/eco-opti-agent)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 </div>
 
@@ -32,13 +32,13 @@ Eco-Opti-Agent is a full-stack, multi-agent AI system designed to intelligently 
 | Category         | Technologies                     |
 |------------------|----------------------------------|
 | **Frontend**     | HTML5, CSS3, Vanilla JavaScript  |
-| **Backend**      | Python, Flask, Gunicorn          |
-| **AI / Logic**   | LangChain, LangGraph, Google Gemini (1.5 Flash) |
-| **Deployment**   | Render                           |
+| **Backend**      | Python, Flask, Docker          |
+| **AI / Logic**   | LangChain, Hugging Face Hub (Llama 3 8B) |
+| **Deployment**   | Hugging Face Spaces              |
 
 ## 🚀 Live Demo
 
-Check out the live application here: **[Eco-Opti-Agent Live](https://eco-opti-agent-g241.onrender.com)**
+Check out the live application here: **[Eco-Opti-Agent Live on Hugging Face Spaces](https://huggingface.co/spaces/Satya73/eco-opti-agent)**
 
 *(Note: The demo gracefully degrades to use mock data if an API key is not provided).*
 
@@ -63,9 +63,9 @@ Check out the live application here: **[Eco-Opti-Agent Live](https://eco-opti-ag
    ```
 
 3. **Set up Environment Variables:**
-   Create a `.env` file in the `backened` directory and add your Google API Key (optional for mock mode):
+   Create a `.env` file in the `backened` directory and add your Hugging Face Access Token (optional for mock mode):
    ```env
-   GOOGLE_API_KEY=your_gemini_api_key_here
+   HUGGINGFACEHUB_API_TOKEN=your_hf_token_here
    ```
 
 4. **Start the server:**
@@ -74,13 +74,13 @@ Check out the live application here: **[Eco-Opti-Agent Live](https://eco-opti-ag
    ```
    Navigate to `http://localhost:5000` in your browser.
 
-## ☁️ Render Deployment
+## ☁️ Hugging Face Spaces Deployment
 
-Deploying this app is a breeze using the included Render Blueprint:
+Deploying this app is a breeze using a Docker Space on Hugging Face:
 1. Push this repository to GitHub.
-2. Go to the [Render Dashboard](https://dashboard.render.com/) and create a new **Blueprint**.
-3. Select this repository. Render will automatically detect `render.yaml` and deploy both the backend and frontend.
-4. Add your `GOOGLE_API_KEY` as an environment variable in the Render dashboard.
+2. Go to [Hugging Face Spaces](https://huggingface.co/spaces) and create a new **Docker Space**.
+3. Link your GitHub repository. Hugging Face will automatically detect the `Dockerfile` and deploy the app.
+4. Add your `HUGGINGFACEHUB_API_TOKEN` as a Secret variable in the Space settings.
 
 ## 📂 Project Structure
 
