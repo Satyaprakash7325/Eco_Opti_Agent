@@ -208,4 +208,4 @@ def analyze():
         return jsonify({"error": f"Backend Error: {str(e)}"}), 400
 
 if __name__== '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=7860, debug=False)
