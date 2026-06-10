@@ -1,7 +1,7 @@
 # ECO-OPTI-AGENT
 # 🌱 EcoOptiAgent – AI-Driven Carbon Optimization
 
-**[Live Demo](your-render-url-here)**
+**[Live Demo](https://eco-opti-agent-g241.onrender.com)**
 
 EcoOptiAgent is a full-stack multi-agent AI system designed to optimize carbon emissions for businesses. It uses intelligent agents, HTML/JS frontend, and a Python Flask backend to analyze emission patterns and provide actionable recommendations for sustainability.
 
