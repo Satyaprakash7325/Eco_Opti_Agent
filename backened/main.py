@@ -130,11 +130,12 @@ class AgentState(TypedDict):
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
-    data = request.json
+    try:
+        data = request.json
 
-    if not os.getenv("GOOGLE_API_KEY"):
-        # Mock response when API key is missing
-        return jsonify({
+        if not os.getenv("GOOGLE_API_KEY"):
+            # Mock response when API key is missing
+            return jsonify({
             "electricity_suggestions": ["Switch to LED bulbs", "Use smart power strips", "Optimize AC usage"],
             "transport_suggestions": ["Use public transit", "Carpool", "Switch to electric vehicles"],
             "fuel_suggestions": ["Perform regular maintenance", "Use alternative fuels", "Optimize routing"],
@@ -200,6 +201,11 @@ def analyze():
         "optimizer_output": optimizer_output,
         "final_decision": final_decision
     })
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": f"Backend Error: {str(e)}"}), 400
 
 if __name__== '__main__':
     app.run(debug=True)
