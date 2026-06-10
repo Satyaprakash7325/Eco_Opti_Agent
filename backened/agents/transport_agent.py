@@ -106,7 +106,7 @@ load_dotenv()
 class TransportSuggestions(BaseModel):
     suggestions: list[str] = Field(..., description="A list of three actionable suggestions for reducing transport-related emissions.")
 
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.4, google_api_key=os.getenv("GOOGLE_API_KEY", "dummy_key"))
+llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.4, google_api_key=os.getenv("GOOGLE_API_KEY", "dummy_key"))
 llm_with_structure = llm.with_structured_output(TransportSuggestions)
 
 def calculate_transport_emissions(num_vehicles, avg_km_per_day):

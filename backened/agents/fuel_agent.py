@@ -62,7 +62,7 @@ load_dotenv()
 class FuelSuggestions(BaseModel):
     suggestions: list[str] = Field(..., description="A list of three actionable suggestions for reducing emissions from fuel usage.")
 
-llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.4, google_api_key=os.getenv("GOOGLE_API_KEY", "dummy_key"))
+llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.4, google_api_key=os.getenv("GOOGLE_API_KEY", "dummy_key"))
 llm_with_structure = llm.with_structured_output(FuelSuggestions)
 
 def calculate_fuel_emissions(uses_diesel, uses_lpg):
