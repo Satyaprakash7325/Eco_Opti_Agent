@@ -1,6 +1,7 @@
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_huggingface import HuggingFaceEndpoint
 from langchain_core.prompts import PromptTemplate
 from pydantic import BaseModel, Field
+from langchain_core.output_parsers import PydanticOutputParser
 import os
 from dotenv import load_dotenv
 
@@ -9,8 +10,15 @@ load_dotenv()
 class ElectricitySuggestions(BaseModel):
     suggestions: list[str] = Field(..., description="A list of three actionable suggestions for reducing electricity consumption.")
 
-llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", google_api_key=os.getenv("GOOGLE_API_KEY", "dummy_key"))
-llm_with_structure = llm.with_structured_output(ElectricitySuggestions)
+llm = HuggingFaceEndpoint(
+    repo_id="meta-llama/Meta-Llama-3-8B-Instruct",
+    task="text-generation",
+    max_new_tokens=512,
+    do_sample=False,
+    huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN", "dummy_key")
+)
+
+parser = PydanticOutputParser(pydantic_object=ElectricitySuggestions)
 
 electricity_prompt = PromptTemplate(
     input_variables=[
@@ -18,8 +26,12 @@ electricity_prompt = PromptTemplate(
         "ac_usage_hours_per_day", "monthly_electricity_bill", "uses_solar_panels",
         "uses_energy_efficient_devices", "estimated_co2_emission"
     ],
+    partial_variables={"format_instructions": parser.get_format_instructions()},
     template="""
-You are an energy optimization assistant.
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+You are an energy optimization assistant. You must reply strictly in JSON format.
+{format_instructions}
+<|eot_id|><|start_header_id|>user<|end_header_id|>
 The user provides:
 - Lighting type: {lighting_type}
 - Light usage hours/day: {light_usage_hours_per_day}
@@ -30,7 +42,8 @@ The user provides:
 - Uses energy efficient devices: {uses_energy_efficient_devices}
 The estimated electricity CO2 emission is {estimated_co2_emission} kg/month.
 
-Provide exactly three actionable suggestions to optimize energy usage and reduce this emission. Do not include any other text or explanation.
+Provide exactly three actionable suggestions to optimize energy usage and reduce this emission.
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
 """
 )
 
@@ -50,10 +63,10 @@ def run_electricity_agent(input_data):
     input_data["estimated_co2_emission"] = electricity_emission
     
     try:
-        chain = electricity_prompt | llm_with_structure
+        chain = electricity_prompt | llm | parser
         response = chain.invoke(input_data)
         
-        if response:
+        if response and hasattr(response, "suggestions"):
             return response.suggestions, electricity_emission
         else:
             print("Warning: LLM returned an empty response for electricity_agent.")

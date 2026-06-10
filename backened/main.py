@@ -133,7 +133,7 @@ def analyze():
     try:
         data = request.json
 
-        if not os.getenv("GOOGLE_API_KEY"):
+        if not os.getenv("HUGGINGFACEHUB_API_TOKEN"):
             # Mock response when API key is missing
             return jsonify({
             "electricity_suggestions": ["Switch to LED bulbs", "Use smart power strips", "Optimize AC usage"],

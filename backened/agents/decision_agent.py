@@ -41,24 +41,28 @@
 from langchain_core.runnables import RunnableLambda
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_huggingface import HuggingFaceEndpoint
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash",
-    google_api_key=os.getenv("GOOGLE_API_KEY", "dummy_key")
+llm = HuggingFaceEndpoint(
+    repo_id="meta-llama/Meta-Llama-3-8B-Instruct",
+    task="text-generation",
+    max_new_tokens=512,
+    do_sample=False,
+    huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN", "dummy_key")
 )
 
 decision_prompt = PromptTemplate(
     input_variables=["input"],
     template="""
+<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 You are an intelligent sustainability decision agent. You have received an analysis of a business's CO2 emissions and a list of suggestions from various specialized agents.
 
 Your task is to review all the provided information and synthesize it into a final, prioritized sustainability plan.
-
+<|eot_id|><|start_header_id|>user<|end_header_id|>
 Input from agents:
 {input}
 
@@ -67,6 +71,7 @@ Based on this, provide a concise summary of the business's carbon footprint and 
 For each of the three recommendations, state the action and its estimated impact.
 
 Response:
+<|eot_id|><|start_header_id|>assistant<|end_header_id|>
 """.strip()
 )
 

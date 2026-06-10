@@ -1,7 +1,7 @@
 flask
 flask-cors
 langchain
-langchain-google-genai
+langchain-huggingface
 langgraph
 python-dotenv
 requests
