@@ -2,6 +2,7 @@ services:
   - type: web
     name: eco-opti-agent
     env: python
+    plan: free
     buildCommand: "pip install -r backened/requirement.txt"
     startCommand: "cd backened && gunicorn main:app"
     envVars:
