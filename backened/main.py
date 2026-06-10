@@ -146,61 +146,61 @@ def analyze():
             "final_decision": "Implement the suggested transport and electricity optimizations. **Action:** Start with LED replacements. **Impact:** Immediate reduction in power consumption."
         })
         
-    # Map frontend keys to backend expected keys
-    data["monthly_electricity_bill"] = data.get("electricity_bill", 0)
-    data["number_of_diesel_vehicles"] = data.get("num_vehicles", 0)
-    data["average_km_per_vehicle_per_day"] = data.get("avg_km_per_day", 0)
-    data["uses_diesel_generator"] = data.get("uses_diesel", False)
-    data["uses_lpg_or_propane"] = data.get("uses_lpg", False)
-    
-    # Step 1: Run specialized agents sequentially and collect their outputs
-    electricity_suggestions, electricity_emission = run_electricity_agent(data)
-    transport_suggestions, transport_emission = run_transport_agent(data)
-    fuel_suggestions, fuel_emission = run_fuel_agent(data)
-    greeninfra_suggestion = run_greeninfra_agent.invoke({"data":data})
-    
-    # Step 2: Aggregate data for higher-level agents
-    all_suggestions = electricity_suggestions + transport_suggestions + fuel_suggestions
-    emissions_breakdown = {
-        "electricity": electricity_emission,
-        "transport": transport_emission,
-        "fuel": fuel_emission
-    }
-    total_emissions = sum(emissions_breakdown.values())
-
-    try:
-        # Step 3: Run the Optimizer Agent
-        optimizer_state = {
-            "total_emissions": total_emissions,
-            "emissions_breakdown": emissions_breakdown,
-            "all_suggestions": all_suggestions
+        # Map frontend keys to backend expected keys
+        data["monthly_electricity_bill"] = data.get("electricity_bill", 0)
+        data["number_of_diesel_vehicles"] = data.get("num_vehicles", 0)
+        data["average_km_per_vehicle_per_day"] = data.get("avg_km_per_day", 0)
+        data["uses_diesel_generator"] = data.get("uses_diesel", False)
+        data["uses_lpg_or_propane"] = data.get("uses_lpg", False)
+        
+        # Step 1: Run specialized agents sequentially and collect their outputs
+        electricity_suggestions, electricity_emission = run_electricity_agent(data)
+        transport_suggestions, transport_emission = run_transport_agent(data)
+        fuel_suggestions, fuel_emission = run_fuel_agent(data)
+        greeninfra_suggestion = run_greeninfra_agent.invoke({"data":data})
+        
+        # Step 2: Aggregate data for higher-level agents
+        all_suggestions = electricity_suggestions + transport_suggestions + fuel_suggestions
+        emissions_breakdown = {
+            "electricity": electricity_emission,
+            "transport": transport_emission,
+            "fuel": fuel_emission
         }
-        optimizer_output = run_optimizer_agent(optimizer_state)["optimizer_output"]
+        total_emissions = sum(emissions_breakdown.values())
 
-        # Step 4: Run the Decision Agent
-        decision_agent_input_str = (
-            f"Total emissions: {total_emissions} kg\n"
-            f"Emissions breakdown: {emissions_breakdown}\n"
-            f"Green Infrastructure Status: {greeninfra_suggestion}\n"
-            f"All raw suggestions: {all_suggestions}\n"
-            f"Optimizer's primary suggestion: {optimizer_output}"
-        )
-        final_decision = run_decision_agent.invoke({"input": decision_agent_input_str})
-    except Exception as e:
-        print(f"Error in main LLM chain: {e}")
-        return jsonify({"error": str(e)}), 400
+        try:
+            # Step 3: Run the Optimizer Agent
+            optimizer_state = {
+                "total_emissions": total_emissions,
+                "emissions_breakdown": emissions_breakdown,
+                "all_suggestions": all_suggestions
+            }
+            optimizer_output = run_optimizer_agent(optimizer_state)["optimizer_output"]
 
-    # Step 5: Return the final JSON response with ALL keys
-    return jsonify({
-        "electricity_suggestions": electricity_suggestions,
-        "transport_suggestions": transport_suggestions,
-        "fuel_suggestions": fuel_suggestions,
-        "greeninfra_suggestion": greeninfra_suggestion,
-        "emissions_breakdown": emissions_breakdown,
-        "total_emissions_kg_per_month": total_emissions,
-        "optimizer_output": optimizer_output,
-        "final_decision": final_decision
-    })
+            # Step 4: Run the Decision Agent
+            decision_agent_input_str = (
+                f"Total emissions: {total_emissions} kg\n"
+                f"Emissions breakdown: {emissions_breakdown}\n"
+                f"Green Infrastructure Status: {greeninfra_suggestion}\n"
+                f"All raw suggestions: {all_suggestions}\n"
+                f"Optimizer's primary suggestion: {optimizer_output}"
+            )
+            final_decision = run_decision_agent.invoke({"input": decision_agent_input_str})
+        except Exception as e:
+            print(f"Error in main LLM chain: {e}")
+            return jsonify({"error": str(e)}), 400
+
+        # Step 5: Return the final JSON response with ALL keys
+        return jsonify({
+            "electricity_suggestions": electricity_suggestions,
+            "transport_suggestions": transport_suggestions,
+            "fuel_suggestions": fuel_suggestions,
+            "greeninfra_suggestion": greeninfra_suggestion,
+            "emissions_breakdown": emissions_breakdown,
+            "total_emissions_kg_per_month": total_emissions,
+            "optimizer_output": optimizer_output,
+            "final_decision": final_decision
+        })
 
     except Exception as e:
         import traceback
