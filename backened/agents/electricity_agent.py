@@ -9,7 +9,7 @@ load_dotenv()
 class ElectricitySuggestions(BaseModel):
     suggestions: list[str] = Field(..., description="A list of three actionable suggestions for reducing electricity consumption.")
 
-llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=os.getenv("GOOGLE_API_KEY", "dummy_key"))
+llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", google_api_key=os.getenv("GOOGLE_API_KEY", "dummy_key"))
 llm_with_structure = llm.with_structured_output(ElectricitySuggestions)
 
 electricity_prompt = PromptTemplate(
