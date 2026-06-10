@@ -1,161 +1,122 @@
-# ECO-OPTI-AGENT
-# 🌱 EcoOptiAgent – AI-Driven Carbon Optimization
+<div align="center">
+  <img src="frontend/FullLogo_NoBuffer.jpg" alt="EcoOpti Logo" width="200" style="border-radius:10px; margin-bottom:20px;" />
+  <h1>🌱 Eco-Opti-Agent</h1>
+  <p><strong>AI-Driven Carbon Optimization for Businesses</strong></p>
+  
+  [![Live Demo](https://img.shields.io/badge/Live-Demo-brightgreen.svg)](https://eco-opti-agent-g241.onrender.com)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+</div>
 
-**[Live Demo](https://eco-opti-agent-g241.onrender.com)**
+<br />
 
-EcoOptiAgent is a full-stack multi-agent AI system designed to optimize carbon emissions for businesses. It uses intelligent agents, HTML/JS frontend, and a Python Flask backend to analyze emission patterns and provide actionable recommendations for sustainability.
+Eco-Opti-Agent is a full-stack, multi-agent AI system designed to intelligently analyze and optimize carbon emissions for businesses. By leveraging a team of specialized AI agents, it breaks down complex emission patterns and delivers actionable, prioritized recommendations to drive real-world sustainability.
 
----
+## ✨ Key Features
 
-## 🚀 Features
+- **🤖 Multi-Agent Architecture**: Specialized agents for Electricity, Transport, Fuel, and Green Infrastructure.
+- **📊 Smart Emission Predictor**: Calculates footprints based on real-world consumption patterns.
+- **⚡ Optimizer & Decision Agents**: Synthesizes raw data into the top 3 highest-impact sustainability actions.
+- **🎨 Interactive Dashboard**: Clean, responsive, and animated UI built with modern HTML/JS/CSS.
+- **🚀 Unified Flask Backend**: Serves both the REST API and the frontend client seamlessly.
 
-1. Multi-Agent Architecture (Electricity Agent,Transport Agent,Fuel Agent,,GreenInfra Agent,Optimization Agent,Decision Agent)
-2. Emission Trend Analysis with chating
-3. Smart Emission Predictor (based on historical data)
-4. Adaptive User Preferences
-5. Full-Stack Integration (React, JS, Flask, Python)
-6. Interactive Carbon Management Dashboard
+## 🧰 Tech Stack
 
----
-
-## 🧰 Tools & Technologies
-
-| Category         | Stack                            |
+| Category         | Technologies                     |
 |------------------|----------------------------------|
-| Frontend         | HTML, CSS, JavaScript, React     |
-| Backend          | Python, Flask, LangGraph, Gemini API |
-| Version Control  | Git & GitHub                     |
+| **Frontend**     | HTML5, CSS3, Vanilla JavaScript  |
+| **Backend**      | Python, Flask, Gunicorn          |
+| **AI / Logic**   | LangChain, LangGraph, Google Gemini (1.5 Flash) |
+| **Deployment**   | Render                           |
 
-           |
+## 🚀 Live Demo
 
+Check out the live application here: **[Eco-Opti-Agent Live](https://eco-opti-agent-g241.onrender.com)**
 
----
+*(Note: The demo gracefully degrades to use mock data if an API key is not provided).*
 
-## 🛠 Installation
+## 🛠️ Local Installation
 
 ### Prerequisites
-
-- Node.js & npm installed
-- Python 3.8+ with pip
+- Python 3.10+
 - Git
 
 ### Setup Instructions
 
-1. Clone the repository
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/Satyaprakash7325/Eco_Opti_Agent.git
    cd Eco_Opti_Agent
    ```
 
-2. Install backend dependencies:
+2. **Install dependencies:**
    ```bash
    cd backened
    pip install -r requirement.txt
    ```
 
-3. Start the Flask server (which also serves the frontend):
+3. **Set up Environment Variables:**
+   Create a `.env` file in the `backened` directory and add your Google API Key (optional for mock mode):
+   ```env
+   GOOGLE_API_KEY=your_gemini_api_key_here
+   ```
+
+4. **Start the server:**
    ```bash
    python main.py
    ```
-4. Open your browser and navigate to `http://localhost:5000`
+   Navigate to `http://localhost:5000` in your browser.
 
-### Render Deployment
-This repository is configured with a `render.yaml` Blueprint. To deploy:
+## ☁️ Render Deployment
+
+Deploying this app is a breeze using the included Render Blueprint:
 1. Push this repository to GitHub.
-2. In the Render Dashboard, create a new "Blueprint".
-3. Select this repository.
-4. Render will automatically build and deploy both the backend and frontend.
-5. Provide your `GOOGLE_API_KEY` as an environment variable in the Render Dashboard (optional: if not provided, the app will gracefully degrade to use mock data for demonstration purposes).
+2. Go to the [Render Dashboard](https://dashboard.render.com/) and create a new **Blueprint**.
+3. Select this repository. Render will automatically detect `render.yaml` and deploy both the backend and frontend.
+4. Add your `GOOGLE_API_KEY` as an environment variable in the Render dashboard.
 
+## 📂 Project Structure
 
-🧠 Project Structure:
-
-EcoOptiAgent/
-├── backend/
-│   ├── agents/
-│   │   ├── __init__.py
+```text
+Eco_Opti_Agent/
+├── backened/                 # Python Flask Backend
+│   ├── agents/               # LangChain AI Agents
 │   │   ├── decision_agent.py
 │   │   ├── electricity_agent.py
 │   │   ├── fuel_agent.py
 │   │   ├── greeninfra_agent.py
 │   │   ├── optimizer_agent.py
-│   │   ├── router_agent.py
 │   │   └── transport_agent.py
-│   ├── prompts/
-│   ├── main.py
-│   ├── utils.py
-│   └── requirements.txt
-│
-├── frontend/
-│   ├── index.html
-│   ├── style.css
-│   ├── script.js
-│   └── FullLogo_NoBuffer.jpg
-│
-├── list_models.py
-├── .gitignore
-├── README.md
+│   ├── main.py               # Flask App Entry Point
+│   ├── utils.py              # Helper Functions
+│   └── requirement.txt       # Python Dependencies
+├── frontend/                 # Static Web Assets
+│   ├── index.html            # Main UI
+│   ├── script.js             # API Integration & Logic
+│   ├── style.css             # Animations & Styling
+│   └── FullLogo_NoBuffer.jpg # Brand Logo
+├── render.yaml               # Render Deployment Blueprint
+└── README.md                 # Project Documentation
+```
 
+## 🤝 Contributing
 
-
-🧠 Architecture:
-
-
-2. backend/
-   ├── app.py            → Flask server: connects frontend with agents
-   ├── utils.py          → Utility functions for data handling
-   ├── requirements.txt  → Python dependencies
-   └── agents/
-       ├── decision_agent.py      → Central logic for emissions optimization
-       ├── electricity_agent.py   → Analyzes electricity consumption patterns
-       ├── fuel_agent.py          → Handles emission data from fuel usage
-       ├── transport_agent.py     → Manages transport-related emissions
-       ├── greeninfra_agent.py    → Suggests green infrastructure options
-       ├── optimizer_agent.py     → Optimizes decisions across agents
-       └── router_agent.py        → Routes communication between agents
-   
-📝 License:
-
-This project is licensed under the MIT License.
-You are free to use, modify, and distribute this software with proper attribution.
-See the LICENSE file for details.
-
-🤝 Contribution:
 Contributions, issues, and feature requests are welcome!
+1. Fork the project.
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
 
-To contribute:
+## 📝 License
 
-1.Fork the repository.
+Distributed under the MIT License. See `LICENSE` for more information.
 
-2.Create your feature branch: git checkout -b feature/YourFeature
+## 📞 Support
 
-3.Commit your changes: git commit -m 'Add some feature'
+For any questions, support, or collaboration, please contact:
+📧 **patrasatyaprakash73@gmail.com**
 
-4.Push to the branch: git push origin feature/YourFeature
-
-5.Open a pull request.
-
-
-
-📞 Support:
-
-For any questions or support, please contact:
-📧 sunyaslokapriyadarshi@gmail.com
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+---
+<div align="center">
+  <i>Built to make the world a greener place.</i>
+</div>
