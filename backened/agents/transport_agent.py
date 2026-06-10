@@ -1,5 +1,5 @@
-from langchain_huggingface import HuggingFaceEndpoint
-from langchain_core.prompts import PromptTemplate
+from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
+from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 from langchain_core.output_parsers import PydanticOutputParser
 import os
@@ -10,13 +10,14 @@ load_dotenv()
 class TransportSuggestions(BaseModel):
     suggestions: list[str] = Field(..., description="A list of three actionable suggestions for reducing transport-related emissions.")
 
-llm = HuggingFaceEndpoint(
+llm_endpoint = HuggingFaceEndpoint(
     repo_id="meta-llama/Meta-Llama-3-8B-Instruct",
     task="text-generation",
     max_new_tokens=512,
     do_sample=False,
     huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN", "dummy_key")
 )
+llm = ChatHuggingFace(llm=llm_endpoint)
 
 parser = PydanticOutputParser(pydantic_object=TransportSuggestions)
 
@@ -26,25 +27,10 @@ def calculate_transport_emissions(num_vehicles, avg_km_per_day):
     total_km = num_vehicles * avg_km_per_day * days_in_month
     return round(total_km * EMISSION_FACTOR_KG_PER_KM, 2)
 
-transport_prompt = PromptTemplate(
-    input_variables=[
-        "num_vehicles", "avg_km_per_day", "estimated_transport_emission"
-    ],
-    partial_variables={"format_instructions": parser.get_format_instructions()},
-    template="""
-<|begin_of_text|><|start_header_id|>system<|end_header_id|>
-You are a transportation and logistics optimization assistant. You must reply strictly in JSON format.
-{format_instructions}
-<|eot_id|><|start_header_id|>user<|end_header_id|>
-The user provides the following transportation details:
-- Number of vehicles: {num_vehicles}
-- Average KM per vehicle per day: {avg_km_per_day}
-The estimated transportation CO2 emission is {estimated_transport_emission} kg/month.
-
-Provide exactly three actionable suggestions to reduce transportation emissions.
-<|eot_id|><|start_header_id|>assistant<|end_header_id|>
-"""
-)
+transport_prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a transportation and logistics optimization assistant. You must reply strictly in JSON format.\n{format_instructions}"),
+    ("user", "The user provides the following transportation details:\n- Number of vehicles: {num_vehicles}\n- Average KM per vehicle per day: {avg_km_per_day}\nThe estimated transportation CO2 emission is {estimated_transport_emission} kg/month.\n\nProvide exactly three actionable suggestions to reduce transportation emissions.")
+])
 
 def run_transport_agent(input_data):
     num_vehicles = input_data.get("num_vehicles", 0)
@@ -54,7 +40,8 @@ def run_transport_agent(input_data):
     input_data["estimated_transport_emission"] = transport_emission
     
     try:
-        chain = transport_prompt | llm | parser
+        _prompt = transport_prompt.partial(format_instructions=parser.get_format_instructions())
+        chain = _prompt | llm | parser
         response = chain.invoke(input_data)
         
         if response and hasattr(response, "suggestions"):

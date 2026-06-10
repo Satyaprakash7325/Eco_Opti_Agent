@@ -40,40 +40,26 @@
 # run_decision_agent = RunnableLambda(lambda input: decision_chain.invoke({"input": input}))
 from langchain_core.runnables import RunnableLambda
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.prompts import PromptTemplate
-from langchain_huggingface import HuggingFaceEndpoint
+from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
+from langchain_core.prompts import ChatPromptTemplate
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-llm = HuggingFaceEndpoint(
+llm_endpoint = HuggingFaceEndpoint(
     repo_id="meta-llama/Meta-Llama-3-8B-Instruct",
     task="text-generation",
     max_new_tokens=512,
     do_sample=False,
     huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN", "dummy_key")
 )
+llm = ChatHuggingFace(llm=llm_endpoint)
 
-decision_prompt = PromptTemplate(
-    input_variables=["input"],
-    template="""
-<|begin_of_text|><|start_header_id|>system<|end_header_id|>
-You are an intelligent sustainability decision agent. You have received an analysis of a business's CO2 emissions and a list of suggestions from various specialized agents.
-
-Your task is to review all the provided information and synthesize it into a final, prioritized sustainability plan.
-<|eot_id|><|start_header_id|>user<|end_header_id|>
-Input from agents:
-{input}
-
-Based on this, provide a concise summary of the business's carbon footprint and then give exactly three prioritized, highly actionable recommendations. Do not just repeat the suggestions you were given. Instead, combine and optimize them to form the most impactful three recommendations.
-
-For each of the three recommendations, state the action and its estimated impact.
-
-Response:
-<|eot_id|><|start_header_id|>assistant<|end_header_id|>
-""".strip()
-)
+decision_prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are an intelligent sustainability decision agent. You have received an analysis of a business's CO2 emissions and a list of suggestions from various specialized agents.\n\nYour task is to review all the provided information and synthesize it into a final, prioritized sustainability plan."),
+    ("user", "Input from agents:\n{input}\n\nBased on this, provide a concise summary of the business's carbon footprint and then give exactly three prioritized, highly actionable recommendations. Do not just repeat the suggestions you were given. Instead, combine and optimize them to form the most impactful three recommendations.\n\nFor each of the three recommendations, state the action and its estimated impact.")
+])
 
 parser = StrOutputParser()
 decision_chain = decision_prompt | llm | parser
